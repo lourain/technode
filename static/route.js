@@ -1,6 +1,9 @@
 angular.module('technodeApp')
     .config(function ($routeProvider,$locationProvider) {
-        // $locationProvider.html5Mode(true)
+        $locationProvider.html5Mode({//开启pushState
+            enable:true,
+            requireBase:false
+        })
         $routeProvider.when('/',{
             templateUrl:'/page/room.html',
             controller:'RoomCtrl'
