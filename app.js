@@ -11,9 +11,16 @@ app.use(function (req, res) {
     res.sendFile(path.join(__dirname, './static/index.html'))
 })
 
+var messages = []
 io.on('connection',function (socket) {
-    console.log('a user connected');
-    socket.emit('connected')
+    socket.on('getAllMessages', function () {
+        console.log(messages);
+        socket.emit('allMessages', messages)
+    })
+    socket.on('createMessage', function (message) {
+        messages.push(message)
+        io.emit('messageAdded', message)
+    })
 })
 
 
