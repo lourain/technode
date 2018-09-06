@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "gravatar": "^1.6.0",
     "mongoose": "^5.2.13",
     "socket.io": "^2.1.1"
   }
