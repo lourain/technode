@@ -1,5 +1,8 @@
 {
   "dependencies": {
+    "body-parser": "^1.18.3",
+    "cookie-parser": "^1.4.3",
+    "express-session": "^1.15.6",
     "gravatar": "^1.6.0",
     "mongoose": "^5.2.13",
     "socket.io": "^2.1.1"
