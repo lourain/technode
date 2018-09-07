@@ -9,12 +9,13 @@ var bodyParser = require('body-parser')
 var cookieSession = require('cookie-parser')
 var session = require('express-session')
 
-app.use(bodyParser.json)
+app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:true}))
 app.use(cookieSession())
 app.use(session({
     secret:'technode',
     resave:true,
+    saveUninitialized:false,
     cookie:{
         maxAge:60*1000
     }

@@ -11,4 +11,17 @@ angular.module('technodeApp', ['ngRoute'])
             .catch(function (data) {
                 $location.path('/login')
             })
+        $rootScope.logout = function () {
+            $http({
+                url:'/ajax/logout',
+                method:"GET"
+            })
+                .then(function () {
+                    $rootScope.me = null
+                    $location.path('/login')
+                })
+        }
+        $rootScope.$on('login',function (evt,me) {
+            $rootScope.me = me
+        })
     })
