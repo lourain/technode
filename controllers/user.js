@@ -15,8 +15,9 @@ exports.findByEmailOrCreate = function (email, callback) {
         if (user) {
             callback(null, user)
         } else {
+        
             var obj = {
-                name: email.splite('@')[0],
+                name: email.split('@')[0],
                 email: email,
                 avatarUrl: gravatar.url(email),
             }

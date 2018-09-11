@@ -13,6 +13,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:true}))
 app.use(cookieSession())
 app.use(session({
+    name:"technode",
     secret:'technode',
     resave:true,
     saveUninitialized:false,
@@ -36,8 +37,8 @@ app.post('/api/login',function (req,res) {
             if(err){
                 res.json(500,{msg:err})
             }else{
-                req.session._userId = user._id
-                res.json(user)
+                    req.session._userId = user._id
+                    res.json(user)
             }
         })
     }else{
