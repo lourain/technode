@@ -56,6 +56,7 @@ app.get('/api/validate',function (req,res) {
     if(_userId){
         Controllers.User.findUserById(_userId,function(err,user){
             if(err){
+                console.log(err);
                 res.json(401,{msg:err})
             }else{
                 res.json(user)

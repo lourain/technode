@@ -5,6 +5,8 @@ angular.module('technodeApp', ['ngRoute'])
             method:'GET',
         })
             .then(function (user) {
+                console.log(user);
+                
                 $rootScope.me = user
                 $location.path('/')
             })

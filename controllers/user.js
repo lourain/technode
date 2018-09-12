@@ -2,9 +2,7 @@ var db = require('../models')
 var gravatar = require('gravatar')
 
 exports.findUserById = function (_userId, callback) {
-    db.User.findById({
-        _id: _userId
-    }, callback)
+    db.User.findById(_userId, callback)
 }
 
 exports.findByEmailOrCreate = function (email, callback) {

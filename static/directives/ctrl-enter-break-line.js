@@ -19,7 +19,6 @@ angular.module('technodeApp')
                         evt.preventDefault()
                     }
                 }
-
             })
         }
     })
