@@ -11,6 +11,7 @@ angular.module('technodeApp')
                 .then(function (user) {
                     $scope.$emit('login',user)
                     $location.path('/')
+                    location.reload()
                 })       
                 .catch(function (data) {
                     $location.path('/login')

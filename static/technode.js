@@ -5,17 +5,14 @@ angular.module('technodeApp', ['ngRoute'])
             method:'GET',
         })
             .then(function (user) {
-                console.log(user);
-                
-                $rootScope.me = user
-                $location.path('/')
+                $rootScope.me = user.data
             })
             .catch(function (data) {
                 $location.path('/login')
             })
         $rootScope.logout = function () {
             $http({
-                url:'/ajax/logout',
+                url:'/api/logout',
                 method:"GET"
             })
                 .then(function () {
