@@ -87,9 +87,9 @@ io.use(function (socket,next) {
             })
         }
     })
-    next()
 })
 io.on('connection', function (socket) {
+    console.log('server');
     
     socket.on('getAllMessages', function () {
         socket.emit('allMessages', messages)

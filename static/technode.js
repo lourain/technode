@@ -6,6 +6,7 @@ angular.module('technodeApp', ['ngRoute'])
         })
             .then(function (user) {
                 $rootScope.me = user.data
+                
             })
             .catch(function (data) {
                 $location.path('/login')
