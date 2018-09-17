@@ -52,8 +52,15 @@ app.post('/api/login', function (req, res) {
 })
 
 app.get('/api/logout', function (req, res) {
-    req.session._userId = null
-    res.redirect('/')
+    Controllers.User.offline(req.session._userId,function (err,user) {
+        if(err){
+            res.json(500, { msg: err })
+        }else{
+            delete req.session._userId
+            res.redirect('/')
+        }
+
+    })
 })
 
 app.get('/api/validate', function (req, res) {
@@ -63,7 +70,13 @@ app.get('/api/validate', function (req, res) {
             if (err) {
                 res.json(401, { msg: err })
             } else {
-                res.json(user)
+                Controllers.User.online(_userId,function (err,user) {
+                    if(err){
+                        res.json(500,{msg:err})
+                    }else{
+                        res.json(user)
+                    }
+                })
             }
         })
     } else {
@@ -75,7 +88,7 @@ app.get('/api/validate', function (req, res) {
 var messages = []
 io.use(function (socket,next) {
     var handshakeData = socket.request;
-    var signedCookieParser = cookieParser('technode')
+    var signedCookieParser = cookieParser('technode');//输入签名，返回以此签名解析得函数
     signedCookieParser(handshakeData,null,function (err) {
         if(err){
             next(err)
@@ -89,9 +102,23 @@ io.use(function (socket,next) {
     })
 })
 io.on('connection', function (socket) {
-    console.log('server');
+    //console.log(socket.request.session._userId);
     
-    socket.on('getAllMessages', function () {
+    socket.on('getRoom',function () {
+        Controllers.User.getOnlinesUsers(function (err,users) {
+            if(err){
+                socket.emit('err',{msg:err})
+            }else{
+                console.log(users);
+                
+                socket.emit("roomData",{
+                    users:users,
+                    messages:messages
+                })
+            }
+        })
+    })
+    socket.on('getAllMessages', function () { 
         socket.emit('allMessages', messages)
     })
     socket.on('createMessage', function (message) {
