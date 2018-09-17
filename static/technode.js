@@ -6,6 +6,7 @@ angular.module('technodeApp', ['ngRoute'])
         })
             .then(function (user) {
                 $rootScope.me = user.data
+                console.log(user);
                 
             })
             .catch(function (data) {
@@ -23,5 +24,7 @@ angular.module('technodeApp', ['ngRoute'])
         }
         $rootScope.$on('login',function (evt,me) {
             $rootScope.me = me
+            console.log(me);
+            
         })
     })

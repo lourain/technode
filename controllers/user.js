@@ -26,7 +26,7 @@ exports.findByEmailOrCreate = function (email, callback) {
 }
 
 exports.online = function (id,callback) {
-    db.User.findOneAndUpdate(id,{online:true},callback)
+    db.User.findByIdAndUpdate(id,{online:true},callback)
 }
 exports.offline = function (id,callback) {
     db.User.findByIdAndUpdate(id,{online:false},callback)

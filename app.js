@@ -56,6 +56,7 @@ app.get('/api/logout', function (req, res) {
         if(err){
             res.json(500, { msg: err })
         }else{
+            req.session._userId = null
             delete req.session._userId
             res.redirect('/')
         }
@@ -65,16 +66,18 @@ app.get('/api/logout', function (req, res) {
 
 app.get('/api/validate', function (req, res) {
     var _userId = req.session._userId
+    console.log(_userId);
+    
     if (_userId) {
         Controllers.User.findUserById(_userId, function (err, user) {
             if (err) {
                 res.json(401, { msg: err })
             } else {
-                Controllers.User.online(_userId,function (err,user) {
+                Controllers.User.online(_userId,function (err,_user) {
                     if(err){
                         res.json(500,{msg:err})
                     }else{
-                        res.json(user)
+                        res.json(_user)
                     }
                 })
             }
@@ -109,8 +112,6 @@ io.on('connection', function (socket) {
             if(err){
                 socket.emit('err',{msg:err})
             }else{
-                console.log(users);
-                
                 socket.emit("roomData",{
                     users:users,
                     messages:messages
