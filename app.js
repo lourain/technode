@@ -66,8 +66,6 @@ app.get('/api/logout', function (req, res) {
 
 app.get('/api/validate', function (req, res) {
     var _userId = req.session._userId
-    console.log(_userId);
-    
     if (_userId) {
         Controllers.User.findUserById(_userId, function (err, user) {
             if (err) {
@@ -105,7 +103,15 @@ io.use(function (socket,next) {
     })
 })
 io.on('connection', function (socket) {
-    //console.log(socket.request.session._userId);
+    var _userId = socket.request.session._userId
+    
+    Controllers.User.online(_userId,function (err,user) {
+        if(err){
+            socket.emit('err',{msg:err})
+        }else{
+            socket.broadcast.emit('online',user)
+        }
+    })
     
     socket.on('getRoom',function () {
         Controllers.User.getOnlinesUsers(function (err,users) {
@@ -127,7 +133,17 @@ io.on('connection', function (socket) {
         io.emit('messageAdded', message)
     })
 })
-
+io.on('disconnect',function () {
+    Controllers.User.offline(_userId,function (err,user) {
+        if(err){
+            socket.emit('err',{
+                msg:err
+            })
+        }else{
+            socket.broadcast.emit('offline',user)
+        }
+    })
+})
 
 
 http.listen(port, function () {
