@@ -7,3 +7,4 @@ mongoose.connect('mongodb://122.152.219.175/technode', { useNewUrlParser: true }
 
 
 exports.User = mongoose.model('User',require('./user.js'))
+exports.Message = mongoose.model('Message',require('./message.js'))

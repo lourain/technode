@@ -103,6 +103,7 @@ io.use(function (socket,next) {
     })
 })
 io.on('connection', function (socket) {
+    
     var _userId = socket.request.session._userId
     
     Controllers.User.online(_userId,function (err,user) {
