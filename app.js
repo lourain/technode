@@ -112,6 +112,11 @@ io.on('connection', function (socket) {
                 socket.emit('err', { msg: err })
             } else {
                 socket.broadcast.emit('online', user)
+                socket.broadcast.emit('messageAdded',{
+                    content:user.name+'进入了聊天室',
+                    creator:'SYSTEM',
+                    createAt:new Date()
+                })
             }
         })
     }
@@ -174,6 +179,11 @@ io.on('disconnect',function () {
             })
         }else{
             socket.broadcast.emit('offline',user)
+            socket.broadcast.emit('messageAdded',{
+                content:user.name + '离开聊天室',
+                creator:'SYSTEM',
+                createAt:new Date()
+            })
         }
     })
 })

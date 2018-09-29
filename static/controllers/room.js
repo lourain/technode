@@ -15,13 +15,10 @@ angular.module('technodeApp')
         })
         socket.emit('getRoom')
         socket.on('online', function (user) {
-            console.log(user.name);
             $scope.room.users = $scope.room.users.filter(function (item) {
                 return item.name != user.name
             })
             $scope.room.users.push(user);
-            console.log($scope.room.users);
-
         })
         socket.on('offline', function (user) {
             _userId = user._id
