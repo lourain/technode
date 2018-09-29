@@ -1,9 +1,11 @@
 angular.module('technodeApp')
     .controller('RoomCtrl', function ($scope, socket) {
+        $scope.messages = []
         socket.on('roomData', function (room) {
             $scope.room = room
+            
+            
         })
-        $scope.messages = []
         socket.emit('getAllMessages')
         socket.on('allMessages', function (messages) {
             $scope.messages = messages

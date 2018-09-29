@@ -155,8 +155,6 @@ io.on('connection', function (socket) {
         socket.emit('allMessages', messages)
     })
     socket.on('createMessage', function (message) {
-
-        // messages.push(message)
         Controllers.Message.create(message,function (err,message) {
             if(err){
                 socket.emit('err',{
