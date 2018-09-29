@@ -28,6 +28,8 @@ app.use(session({
 }))
 
 var port = process.env.PORT || 3000
+var messages = []
+
 
 app.use(express.static(path.join(__dirname, '/static')))
 app.get('/', function (req, res) {
@@ -80,22 +82,22 @@ app.get('/api/validate', function (req, res) {
                 })
             }
         })
+        
     } else {
         res.json(401, null)
     }
 })
 
 
-var messages = []
-io.use(function (socket,next) {
+io.use(function (socket, next) {
     var handshakeData = socket.request;
-    var signedCookieParser = cookieParser('technode');//输入签名，返回以此签名解析得函数
-    signedCookieParser(handshakeData,null,function (err) {
-        if(err){
+    var signedCookieParser = cookieParser('technode');//输入签名，返回以此签名解析的函数
+    signedCookieParser(handshakeData, null, function (err) {
+        if (err) {
             next(err)
-        }else {
-            sessionStore.get(handshakeData.signedCookies['technode'],function (err,session) {
-                if(err) throw err
+        } else {
+            sessionStore.get(handshakeData.signedCookies['technode'], function (err, session) {
+                if (err) throw err
                 handshakeData.session = session
                 next()
             })
@@ -103,35 +105,67 @@ io.use(function (socket,next) {
     })
 })
 io.on('connection', function (socket) {
-    
-    var _userId = socket.request.session._userId
-    
-    Controllers.User.online(_userId,function (err,user) {
-        if(err){
-            socket.emit('err',{msg:err})
-        }else{
-            socket.broadcast.emit('online',user)
-        }
-    })
-    
-    socket.on('getRoom',function () {
-        Controllers.User.getOnlinesUsers(function (err,users) {
-            if(err){
-                socket.emit('err',{msg:err})
-            }else{
-                socket.emit("roomData",{
-                    users:users,
-                    messages:messages
-                })
+    if (socket.request.session){
+        var _userId = socket.request.session._userId
+        Controllers.User.online(_userId, function (err, user) {
+            if (err) {
+                socket.emit('err', { msg: err })
+            } else {
+                socket.broadcast.emit('online', user)
             }
         })
+    }
+    
+    socket.on('getRoom',function () {
+         function getOnline() {
+            return new Promise((resolve, reject) => {
+                Controllers.User.getOnlinesUsers(function (err, users) {
+                    if (err) {
+                        socket.emit('err', { msg: err })
+                    } else {
+                        resolve(users)
+                    }
+                })
+            })
+        }
+         function read() {
+            return new Promise((resolve, reject) => {
+                Controllers.Message.read(function (err, data) {
+                    if (err) {
+                        socket.emit('err', err)
+                    } else {
+                        resolve(data)
+                    }
+                })
+            })
+        }
+        async function done() {
+            let users = await getOnline()
+            let msg = await read()
+            console.log(msg);
+            
+            socket.emit('roomData',{
+                users:users,
+                messages:msg
+            })
+        }
+        done()
     })
     socket.on('getAllMessages', function () { 
         socket.emit('allMessages', messages)
     })
     socket.on('createMessage', function (message) {
-        messages.push(message)
-        io.emit('messageAdded', message)
+
+        // messages.push(message)
+        Controllers.Message.create(message,function (err,message) {
+            if(err){
+                socket.emit('err',{
+                    msg:err
+                })
+            }else{
+                io.emit('messageAdded', message)
+            }
+        })
     })
 })
 io.on('disconnect',function () {
