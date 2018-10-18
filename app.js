@@ -8,6 +8,7 @@ var Controllers = require('./controllers')
 var bodyParser = require('body-parser')
 var cookieParser = require('cookie-parser')
 
+
 var session = require('express-session')
 const MongoStore = require('connect-mongo')(session);
 const sessionStore = new MongoStore({
@@ -19,7 +20,6 @@ app.use(cookieParser())
 app.use(session({
     name: "technode",
     secret: 'technode',
-    resave: true,
     saveUninitialized: false,
     store: sessionStore,
     cookie: {
